@@ -1,4 +1,1 @@
-./data/confluencedata/data/*
-./data/confluencedata/db/*
-./data/jiradata/data/*
-./data/jiradata/db/*
+./data/
