@@ -1,10 +1,19 @@
 version: '2'
 
 services:
+  jenkins:
+    container_name: jenkins-docker
+    build:
+      context: ./jenkins/
+    volumes:
+      - ./data/jenkinsdata:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - '8080:8080'
+      - '50000:50000'
   confluence:
     depends_on:
       - postgresql-confluence
-    image: blacklabelops/confluence
     container_name: confluence
     build:
       context: ./confluence/
@@ -48,7 +57,6 @@ services:
   jira:
     depends_on:
       - postgresql-jira
-    image: blacklabelops/jira
     container_name: jira
     build:
       context: ./jira/
