@@ -1,6 +1,15 @@
 version: '2'
 
 services:
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '8080:8080'
+      - '8888:8888'
+      - '9999:9999'
   jenkins:
     container_name: jenkins-docker
     build:
@@ -9,8 +18,8 @@ services:
       - ./data/jenkinsdata:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - '8080:8080'
-      - '50000:50000'
+      - '8080'
+      - '50000'
   confluence:
     depends_on:
       - postgresql-confluence
@@ -22,8 +31,8 @@ services:
     volumes:
       - ./data/confluencedata/data:/var/atlassian/confluence
     ports:
-      - '8888:8090'
-      - '8091:8091'
+      - '8090'
+      - '8091'
     environment:
       - CONFLUENCE_DB_HOST=postgresql-confluence
       - CONFLUENCE_DB_PORT=5432
@@ -31,8 +40,8 @@ services:
       - CONFLUENCE_DB_PASSWORD=confluence
       - CATALINA_OPTS=-Xms256m -Xmx1g
       - CONFLUENCE_PROXY_NAME=
-      - CONFLUENCE_PROXY_PORT=
-      - CONFLUENCE_PROXY_SCHEME=
+      - CONFLUENCE_PROXY_PORT=8888
+      - CONFLUENCE_PROXY_SCHEME=http
       - CONFLUENCE_DELAYED_START=
       - CONFLUENCE_CONFIG_PROPERTY1=hibernate.connection.driver_class
       - CONFLUENCE_CONFIG_VALUE1=org.postgresql.Driver
@@ -63,7 +72,7 @@ services:
     volumes:
       - ./data/jiradata/data:/var/atlassian/jira
     ports:
-      - '9999:8080'
+      - '8080'
     environment:
       - 'JIRA_DATABASE_URL=postgresql://jira@postgresql-jira/jira'
       - 'JIRA_DB_PASSWORD=jira'
@@ -71,7 +80,7 @@ services:
       - 'SETENV_JVM_MINIMUM_MEMORY=512m'
       - 'SETENV_JVM_MAXIMUM_MEMORY=1024m'
       - 'JIRA_PROXY_NAME='
-      - 'JIRA_PROXY_PORT='
+      - 'JIRA_PROXY_PORT=9999'
       - 'JIRA_PROXY_SCHEME='
   postgresql-jira:
     image: blacklabelops/postgres
